@@ -18,7 +18,6 @@ import {
   Menu,
   X,
   ChevronDown,
-  Cloud,
 } from "lucide-react";
 import clsx from "clsx";
 import { useApp } from "../../state/AppContext";

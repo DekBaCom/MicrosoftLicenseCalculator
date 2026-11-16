@@ -1,26 +1,44 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AppProvider } from "./state/AppContext";
 import { AppShell } from "./components/layout/AppShell";
-import Dashboard from "./pages/Dashboard";
-import NewAssessment from "./pages/NewAssessment";
-import Assessments from "./pages/Assessments";
-import WindowsServer from "./pages/WindowsServer";
-import ExchangeServer from "./pages/ExchangeServer";
-import SQLServerPage from "./pages/SQLServer";
-import CALRDS from "./pages/CALRDS";
-import Calculator from "./pages/Calculator";
-import Recommendations from "./pages/Recommendations";
-import Reports from "./pages/Reports";
-import Export from "./pages/Export";
-import Catalog from "./pages/Catalog";
-import DataCollection from "./pages/DataCollection";
-import Settings from "./pages/Settings";
+
+// Route-level code splitting: each page is its own chunk so the first
+// paint only ships the shell + Dashboard, not every page's dependencies.
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const NewAssessment = lazy(() => import("./pages/NewAssessment"));
+const Assessments = lazy(() => import("./pages/Assessments"));
+const WindowsServer = lazy(() => import("./pages/WindowsServer"));
+const ExchangeServer = lazy(() => import("./pages/ExchangeServer"));
+const SQLServerPage = lazy(() => import("./pages/SQLServer"));
+const CALRDS = lazy(() => import("./pages/CALRDS"));
+const Calculator = lazy(() => import("./pages/Calculator"));
+const Recommendations = lazy(() => import("./pages/Recommendations"));
+const Reports = lazy(() => import("./pages/Reports"));
+const Export = lazy(() => import("./pages/Export"));
+const Catalog = lazy(() => import("./pages/Catalog"));
+const DataCollection = lazy(() => import("./pages/DataCollection"));
+const Settings = lazy(() => import("./pages/Settings"));
+
+function PageFallback() {
+  return (
+    <div className="flex items-center justify-center py-16 text-sm text-slate-500">
+      <div className="animate-pulse">Loading…</div>
+    </div>
+  );
+}
 
 export default function App() {
   return (
     <AppProvider>
       <Routes>
-        <Route element={<AppShell />}>
+        <Route
+          element={
+            <Suspense fallback={<PageFallback />}>
+              <AppShell />
+            </Suspense>
+          }
+        >
           <Route index element={<Dashboard />} />
           <Route path="assessments" element={<Assessments />} />
           <Route path="assessments/new" element={<NewAssessment />} />

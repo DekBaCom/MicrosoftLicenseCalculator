@@ -7,7 +7,6 @@ import type { ProductPricing } from "../types";
 import { formatCurrency, formatNumber } from "../utils/format";
 import { uid } from "../utils/id";
 import { PRODUCT_CATEGORIES } from "../data/products";
-import { exportTableCSV } from "../export/excel";
 
 export default function Catalog() {
   const { pricing, setPricing } = useApp();
@@ -56,7 +55,7 @@ export default function Catalog() {
               <Upload className="w-4 h-4" /> Import JSON
               <input hidden type="file" accept="application/json" onChange={(e) => e.target.files && onImport(e.target.files[0])} />
             </label>
-            <button className="btn-secondary" onClick={() => exportTableCSV(pricing as any, "license_catalog.csv")}>
+            <button className="btn-secondary" onClick={async () => { const m = await import("../export/excel"); m.exportTableCSV(pricing as any, "license_catalog.csv"); }}>
               <Download className="w-4 h-4" /> Export CSV
             </button>
             <button className="btn-primary" onClick={add}><Plus className="w-4 h-4" /> Add Product</button>

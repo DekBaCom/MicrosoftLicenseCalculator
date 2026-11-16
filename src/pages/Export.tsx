@@ -5,8 +5,6 @@ import { PageHeader } from "../components/common/PageHeader";
 import { EmptyState } from "../components/common/EmptyState";
 import { Disclaimer } from "../components/common/Disclaimer";
 import { useApp } from "../state/AppContext";
-import { exportAssessmentXLSX, exportTableCSV } from "../export/excel";
-import { exportReportPDF } from "../export/pdf";
 import { analyzeGaps } from "../engine/gapAnalyzer";
 import { generateRecommendations } from "../engine/recommendationEngine";
 import { calculateWindowsLicensing } from "../engine/windowsCalculator";
@@ -42,6 +40,20 @@ export default function Export() {
     );
   }
 
+  // Dynamic imports keep ~700 KB of xlsx/jspdf out of the initial bundle.
+  const runXLSX = async () => {
+    const m = await import("../export/excel");
+    m.exportAssessmentXLSX(current, pricing, settings.defaultCurrency);
+  };
+  const runPDF = async () => {
+    const m = await import("../export/pdf");
+    m.exportReportPDF(current, data, settings.defaultCurrency);
+  };
+  const runCSV = async (rows: any[], filename: string) => {
+    const m = await import("../export/excel");
+    m.exportTableCSV(rows, filename);
+  };
+
   return (
     <>
       <PageHeader
@@ -55,13 +67,13 @@ export default function Export() {
           icon={<FileSpreadsheet className="w-8 h-8 text-emerald-600" />}
           title="Excel Workbook"
           desc="Multi-sheet workbook with Summary, Servers, Licensing, CAL, RDS, Exchange, Inventory, Gap, Recommendations, Cost."
-          action={<button className="btn-primary" onClick={() => exportAssessmentXLSX(current, pricing, settings.defaultCurrency)}>Download .xlsx</button>}
+          action={<button className="btn-primary" onClick={runXLSX}>Download .xlsx</button>}
         />
         <ExportCard
           icon={<FileText className="w-8 h-8 text-red-600" />}
           title="PDF Report"
           desc="Professional presentation-ready report including executive summary and licensing tables."
-          action={<button className="btn-primary" onClick={() => exportReportPDF(current, data, settings.defaultCurrency)}>Download .pdf</button>}
+          action={<button className="btn-primary" onClick={runPDF}>Download .pdf</button>}
         />
         <ExportCard
           icon={<FileCode className="w-8 h-8 text-brand-700" />}
@@ -87,12 +99,12 @@ export default function Export() {
       <div className="card p-4">
         <h3 className="font-semibold text-slate-900 mb-3">CSV exports</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-          <button className="btn-secondary" onClick={() => exportTableCSV(current.windowsServers, "windows_servers.csv")}>Windows Servers</button>
-          <button className="btn-secondary" onClick={() => exportTableCSV(current.exchange.servers, "exchange_servers.csv")}>Exchange Servers</button>
-          <button className="btn-secondary" onClick={() => exportTableCSV(current.inventory, "license_inventory.csv")}>License Inventory</button>
-          <button className="btn-secondary" onClick={() => exportTableCSV(data.gaps as any, "license_gap.csv")}>License Gap</button>
-          <button className="btn-secondary" onClick={() => exportTableCSV(data.cost.lines as any, "cost_analysis.csv")}>Cost Analysis</button>
-          <button className="btn-secondary" onClick={() => exportTableCSV(data.recs as any, "recommendations.csv")}>Recommendations</button>
+          <button className="btn-secondary" onClick={() => runCSV(current.windowsServers, "windows_servers.csv")}>Windows Servers</button>
+          <button className="btn-secondary" onClick={() => runCSV(current.exchange.servers, "exchange_servers.csv")}>Exchange Servers</button>
+          <button className="btn-secondary" onClick={() => runCSV(current.inventory, "license_inventory.csv")}>License Inventory</button>
+          <button className="btn-secondary" onClick={() => runCSV(data.gaps as any, "license_gap.csv")}>License Gap</button>
+          <button className="btn-secondary" onClick={() => runCSV(data.cost.lines as any, "cost_analysis.csv")}>Cost Analysis</button>
+          <button className="btn-secondary" onClick={() => runCSV(data.recs as any, "recommendations.csv")}>Recommendations</button>
         </div>
       </div>
 

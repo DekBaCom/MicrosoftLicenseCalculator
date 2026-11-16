@@ -14,7 +14,6 @@ import { calculateRDSCAL } from "../engine/rdsCalculator";
 import { calculateExchange } from "../engine/exchangeCalculator";
 import { calculateCost, calculateGapCost } from "../engine/costCalculator";
 import { formatCurrency, formatDate, formatNumber } from "../utils/format";
-import { exportReportPDF } from "../export/pdf";
 
 export default function Reports() {
   const { current, pricing, settings } = useApp();
@@ -50,7 +49,15 @@ export default function Reports() {
         actions={
           <>
             <button className="btn-secondary" onClick={() => window.print()}><Printer className="w-4 h-4" /> Print</button>
-            <button className="btn-primary" onClick={() => exportReportPDF(current, data, settings.defaultCurrency)}>Export PDF</button>
+            <button
+              className="btn-primary"
+              onClick={async () => {
+                const m = await import("../export/pdf");
+                m.exportReportPDF(current, data, settings.defaultCurrency);
+              }}
+            >
+              Export PDF
+            </button>
           </>
         }
       />
