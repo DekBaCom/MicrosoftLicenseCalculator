@@ -14,6 +14,7 @@ import {
   FileDown,
   BookOpen,
   BookOpenCheck,
+  GraduationCap,
   Settings as SettingsIcon,
   Menu,
   X,
@@ -48,6 +49,7 @@ const nav = [
   { to: "/reports", key: "nav.reports", icon: FileText },
   { to: "/export", key: "nav.export", icon: FileDown },
   { to: "/catalog", key: "nav.catalog", icon: BookOpen },
+  { to: "/licensing-guide", key: "nav.licensingGuide", icon: GraduationCap },
   { to: "/data-collection", key: "nav.dataCollection", icon: BookOpenCheck },
   { to: "/settings", key: "nav.settings", icon: SettingsIcon },
 ];

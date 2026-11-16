@@ -19,6 +19,7 @@ const Reports = lazy(() => import("./pages/Reports"));
 const Export = lazy(() => import("./pages/Export"));
 const Catalog = lazy(() => import("./pages/Catalog"));
 const DataCollection = lazy(() => import("./pages/DataCollection"));
+const LicensingGuide = lazy(() => import("./pages/LicensingGuide"));
 const Templates = lazy(() => import("./pages/Templates"));
 const QuickAssessment = lazy(() => import("./pages/QuickAssessment"));
 const TCO = lazy(() => import("./pages/TCO"));
@@ -60,6 +61,7 @@ export default function App() {
           <Route path="export" element={<Export />} />
           <Route path="catalog" element={<Catalog />} />
           <Route path="data-collection" element={<DataCollection />} />
+          <Route path="licensing-guide" element={<LicensingGuide />} />
           <Route path="settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Route>

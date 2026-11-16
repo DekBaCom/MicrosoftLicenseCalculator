@@ -24,6 +24,7 @@ const en: Dict = {
   "nav.export": "Export",
   "nav.catalog": "License Catalog",
   "nav.dataCollection": "Data Collection Guide",
+  "nav.licensingGuide": "Licensing Guide",
   "nav.settings": "Settings",
 
   // Common
@@ -92,6 +93,7 @@ const th: Dict = {
   "nav.export": "ส่งออก",
   "nav.catalog": "แคตตาล็อก License",
   "nav.dataCollection": "วิธีเก็บข้อมูล Host",
+  "nav.licensingGuide": "คู่มือรูปแบบ License",
   "nav.settings": "ตั้งค่า",
 
   // Common
