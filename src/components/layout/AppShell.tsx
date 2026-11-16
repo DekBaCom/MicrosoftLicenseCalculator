@@ -26,6 +26,7 @@ import {
   Rocket,
   LineChart,
   Zap,
+  Scale,
 } from "lucide-react";
 import clsx from "clsx";
 import { useApp } from "../../state/AppContext";
@@ -42,6 +43,7 @@ const nav = [
   { to: "/exchange", key: "nav.exchange", icon: Mail },
   { to: "/sql", key: "nav.sql", icon: Database },
   { to: "/m365", key: "nav.m365", icon: Cloud },
+  { to: "/m365-compare", key: "nav.m365Compare", icon: Scale },
   { to: "/cal-rds", key: "nav.calrds", icon: Users },
   { to: "/calculator", key: "nav.calculator", icon: Calculator },
   { to: "/tco", key: "nav.tco", icon: LineChart },

@@ -25,6 +25,7 @@ const en: Dict = {
   "nav.catalog": "License Catalog",
   "nav.dataCollection": "Data Collection Guide",
   "nav.licensingGuide": "Licensing Guide",
+  "nav.m365Compare": "M365 Compare",
   "nav.settings": "Settings",
 
   // Common
@@ -94,6 +95,7 @@ const th: Dict = {
   "nav.catalog": "แคตตาล็อก License",
   "nav.dataCollection": "วิธีเก็บข้อมูล Host",
   "nav.licensingGuide": "คู่มือรูปแบบ License",
+  "nav.m365Compare": "เปรียบเทียบ M365",
   "nav.settings": "ตั้งค่า",
 
   // Common

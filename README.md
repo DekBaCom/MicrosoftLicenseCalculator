@@ -60,6 +60,7 @@ saved in LocalStorage (prefix `mslc.v1.`).
   - Exchange: Server License, DAG, CAL, Hybrid, Exchange SE
   - Windows client: OEM / Enterprise / M365 / VDA / Windows 365
   - สรุปสูตรการคำนวณ (Cheat sheet)
+- **เปรียบเทียบ M365** (`#/m365-compare`) — ติ๊กเลือก Office 365 E1/E3/E5, Microsoft 365 E3/E5/E7, EMS E3/E5, Copilot, Agent 365 และ Suite packs (Defender / Purview / Entra / E5 IPG) แล้วดู feature matrix (มี preset, ค้นหา, กรองหมวด, "Differences only") พร้อม **Export Excel / Word** ตามที่เลือกและกรองอยู่ (ข้อมูลเป็นตัวชี้วัดเบื้องต้น — ตรวจสอบกับ Microsoft ก่อนเสนอลูกค้า)
 - **License Catalog** — จัดการราคา เพิ่ม/แก้ไข/ลบ/Import/Export
 
 ### รายงานและการส่งออก
@@ -131,6 +132,11 @@ Sockets, Cores/CPU, จำนวน VM, Edition/Version ของแต่ละ
 
 เมนู **คู่มือรูปแบบ License** อธิบาย Physical / VM / Hybrid / CAL / HA / vMotion / DR ของ
 Windows Server, Exchange และ Windows client พร้อมแผนภาพและสูตรสรุป
+
+### 7) เปรียบเทียบ feature M365
+
+เมนู **เปรียบเทียบ M365** → ติ๊กผลิตภัณฑ์ที่ต้องการเทียบ (หรือกด preset เช่น *E5 vs E7 + suites*) →
+ดูตาราง ✓ / ◐ (บางส่วน) / – → กด **Export Excel** หรือ **Export Word** (ไฟล์ .doc แนวนอน เปิดด้วย Word ได้)
 
 ### เคล็ดลับ
 

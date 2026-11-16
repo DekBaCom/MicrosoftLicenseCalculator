@@ -20,6 +20,7 @@ const Export = lazy(() => import("./pages/Export"));
 const Catalog = lazy(() => import("./pages/Catalog"));
 const DataCollection = lazy(() => import("./pages/DataCollection"));
 const LicensingGuide = lazy(() => import("./pages/LicensingGuide"));
+const M365Compare = lazy(() => import("./pages/M365Compare"));
 const Templates = lazy(() => import("./pages/Templates"));
 const QuickAssessment = lazy(() => import("./pages/QuickAssessment"));
 const TCO = lazy(() => import("./pages/TCO"));
@@ -51,6 +52,7 @@ export default function App() {
           <Route path="exchange" element={<ExchangeServer />} />
           <Route path="sql" element={<SQLServerPage />} />
           <Route path="m365" element={<M365Page />} />
+          <Route path="m365-compare" element={<M365Compare />} />
           <Route path="cal-rds" element={<CALRDS />} />
           <Route path="quick" element={<QuickAssessment />} />
           <Route path="templates" element={<Templates />} />
