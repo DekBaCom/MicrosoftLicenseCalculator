@@ -34,10 +34,19 @@ export interface Environment {
   cloudProvider: CloudProvider;
   hybrid: boolean;
   operatingSystems: string[]; // e.g. ["Windows Server 2019", "Windows Server 2022"]
+  /** Enables Azure Hybrid Benefit modeling (requires SA on applicable licenses). */
+  azureHybridBenefit?: boolean;
+  /** Azure VM vCores targeted for Windows AHB coverage. */
+  azureWindowsVMvCores?: number;
+  /** Azure SQL vCores targeted for SQL AHB coverage. */
+  azureSqlVCores?: number;
+  /** Azure SQL tier for AHB math: General Purpose or Business Critical. */
+  azureSqlTier?: "GeneralPurpose" | "BusinessCritical";
 }
 
 export type ServerType = "Physical" | "VM";
 export type WindowsEdition = "Standard" | "Datacenter" | "Essentials";
+export type WindowsLicensingModel = "PerCore" | "PerVM";
 export type WindowsVersion =
   | "Windows Server 2016"
   | "Windows Server 2019"
@@ -114,17 +123,78 @@ export interface ExchangeAssessment {
   calType: ExchangeCALType;
 }
 
+// ------------------- SQL Server -------------------
+
+export type SQLEdition = "Standard" | "Enterprise";
+export type SQLLicensingModel = "PerCore" | "ServerCAL";
+
+export interface SQLServer {
+  id: UUID;
+  name: string;
+  version: string; // e.g. "SQL Server 2022", "SQL Server 2025"
+  edition: SQLEdition;
+  model: SQLLicensingModel;
+  type: ServerType;
+  cpuSockets: number;
+  cores: number;
+  hasSoftwareAssurance: boolean;
+  passiveFailover: boolean;
+  role?: string;
+}
+
+export interface SQLAssessment {
+  servers: SQLServer[];
+  /** Users or devices accessing SQL via Server+CAL model. */
+  calUsers: number;
+  ownedServerCAL: number;
+  ownedStandardCores: number;
+  ownedEnterpriseCores: number;
+  ownedServerLicenses: number;
+}
+
+export interface SQLCalculationResult {
+  totalStandardCoresRequired: number;
+  totalEnterpriseCoresRequired: number;
+  serverLicensesRequired: number;
+  calRequired: number;
+  perServer: SQLCoreLicenseResult[];
+  notes: string[];
+}
+
+export interface SQLCoreLicenseResult {
+  serverId: UUID;
+  serverName: string;
+  edition: SQLEdition;
+  model: SQLLicensingModel;
+  requiredCoreLicenses: number;
+  notes: string[];
+}
+
+// ------------------- Azure Hybrid Benefit -------------------
+
+export interface AHBResult {
+  windowsVMsCoverableByAHB: number;
+  windowsLicensesConsumed: number;
+  sqlvCoresCoverableByAHB: number;
+  sqlLicensesConsumed: number;
+  notes: string[];
+}
+
 // ------------------- Current license inventory -------------------
 
 export type InventoryProduct =
   | "Windows Server Standard"
   | "Windows Server Datacenter"
+  | "Windows Server Essentials"
   | "Windows Server CAL"
   | "RDS CAL"
   | "Exchange Server Standard"
   | "Exchange Server Enterprise"
   | "Exchange Standard CAL"
   | "Exchange Enterprise CAL"
+  | "SQL Server Standard"
+  | "SQL Server Enterprise"
+  | "SQL Server CAL"
   | string;
 
 export interface LicenseInventoryItem {
@@ -208,17 +278,21 @@ export interface Recommendation {
 
 // ------------------- Cost & scenarios -------------------
 
+export type ProductCategory =
+  | "Windows Server"
+  | "Windows CAL"
+  | "RDS"
+  | "Exchange Server"
+  | "Exchange CAL"
+  | "SQL Server"
+  | "SQL CAL"
+  | "Other";
+
 export interface ProductPricing {
   id: string;
   product: string;
   sku: string;
-  category:
-    | "Windows Server"
-    | "Windows CAL"
-    | "RDS"
-    | "Exchange Server"
-    | "Exchange CAL"
-    | "Other";
+  category: ProductCategory;
   version?: string;
   edition?: string;
   metric: "core" | "user" | "device" | "server";
@@ -265,6 +339,7 @@ export interface Assessment {
   windowsCAL: WindowsCALInput;
   rds: RDSCALInput;
   exchange: ExchangeAssessment;
+  sql?: SQLAssessment;
   inventory: LicenseInventoryItem[];
   status: AssessmentStatus;
   createdAt: string;

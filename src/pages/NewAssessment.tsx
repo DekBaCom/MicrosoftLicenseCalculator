@@ -58,6 +58,14 @@ function blank(): Assessment {
       publicFolder: false,
       calType: "Standard",
     },
+    sql: {
+      servers: [],
+      calUsers: 0,
+      ownedServerCAL: 0,
+      ownedStandardCores: 0,
+      ownedEnterpriseCores: 0,
+      ownedServerLicenses: 0,
+    },
     inventory: [],
   };
 }
@@ -270,6 +278,28 @@ function StepEnvironment({ draft, setDraft }: { draft: Assessment; setDraft: Rea
               {os}
             </button>
           ))}
+        </div>
+      </div>
+      <div>
+        <h3 className="font-semibold text-slate-900 mb-2">Azure Hybrid Benefit</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Field label="Enable AHB modeling">
+            <select className="select" value={env.azureHybridBenefit ? "Yes" : "No"} onChange={(e) => update("azureHybridBenefit", e.target.value === "Yes")}>
+              <option>No</option><option>Yes</option>
+            </select>
+          </Field>
+          <Field label="Azure Windows VM vCores (target)">
+            <input type="number" className="input" value={env.azureWindowsVMvCores ?? 0} onChange={(e) => update("azureWindowsVMvCores", Number(e.target.value))} />
+          </Field>
+          <Field label="Azure SQL vCores (target)">
+            <input type="number" className="input" value={env.azureSqlVCores ?? 0} onChange={(e) => update("azureSqlVCores", Number(e.target.value))} />
+          </Field>
+          <Field label="Azure SQL tier">
+            <select className="select" value={env.azureSqlTier ?? "GeneralPurpose"} onChange={(e) => update("azureSqlTier", e.target.value as any)}>
+              <option value="GeneralPurpose">General Purpose</option>
+              <option value="BusinessCritical">Business Critical</option>
+            </select>
+          </Field>
         </div>
       </div>
     </div>

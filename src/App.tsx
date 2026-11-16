@@ -6,6 +6,7 @@ import NewAssessment from "./pages/NewAssessment";
 import Assessments from "./pages/Assessments";
 import WindowsServer from "./pages/WindowsServer";
 import ExchangeServer from "./pages/ExchangeServer";
+import SQLServerPage from "./pages/SQLServer";
 import CALRDS from "./pages/CALRDS";
 import Calculator from "./pages/Calculator";
 import Recommendations from "./pages/Recommendations";
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="assessments/new" element={<NewAssessment />} />
           <Route path="windows" element={<WindowsServer />} />
           <Route path="exchange" element={<ExchangeServer />} />
+          <Route path="sql" element={<SQLServerPage />} />
           <Route path="cal-rds" element={<CALRDS />} />
           <Route path="calculator" element={<Calculator />} />
           <Route path="recommendations" element={<Recommendations />} />

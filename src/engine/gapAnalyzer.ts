@@ -8,6 +8,7 @@ import { calculateWindowsLicensing } from "./windowsCalculator";
 import { calculateWindowsCAL } from "./calCalculator";
 import { calculateRDSCAL } from "./rdsCalculator";
 import { calculateExchange } from "./exchangeCalculator";
+import { calculateSQL } from "./sqlCalculator";
 
 function status(required: number, owned: number): GapStatus {
   if (required === 0 && owned === 0) return "Compliant";
@@ -78,6 +79,17 @@ export function analyzeGaps(a: Assessment): GapLine[] {
   const exchEntCalOwned = ownedOf(a.inventory, (i) => i.product === "Exchange Enterprise CAL");
   lines.push(buildLine("Exchange Standard CAL", exch.standardCALRequired, exchStdCalOwned));
   lines.push(buildLine("Exchange Enterprise CAL", exch.enterpriseCALRequired, exchEntCalOwned));
+
+  // SQL Server
+  if (a.sql && a.sql.servers.length) {
+    const sql = calculateSQL(a.sql);
+    const sqlStdOwned = ownedOf(a.inventory, (i) => i.product === "SQL Server Standard");
+    const sqlEntOwned = ownedOf(a.inventory, (i) => i.product === "SQL Server Enterprise");
+    const sqlCalOwned = ownedOf(a.inventory, (i) => i.product === "SQL Server CAL");
+    lines.push(buildLine("SQL Server Standard (Cores)", sql.totalStandardCoresRequired, sqlStdOwned));
+    lines.push(buildLine("SQL Server Enterprise (Cores)", sql.totalEnterpriseCoresRequired, sqlEntOwned));
+    lines.push(buildLine("SQL Server CAL", sql.calRequired, sqlCalOwned));
+  }
 
   return lines;
 }

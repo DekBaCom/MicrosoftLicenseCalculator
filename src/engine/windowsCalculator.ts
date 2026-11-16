@@ -50,6 +50,14 @@ export function computeServerCoreRequirement(server: WindowsServer): CoreLicense
     notes.push(dcRule.notes || "Datacenter: unlimited virtualization on fully licensed host.");
   }
 
+  if (server.edition === "Essentials") {
+    const essentials = LICENSE_RULES["windows-essentials"];
+    requiredCores = 0;
+    notes.push(
+      `Essentials: 1 server license covers single-socket host, up to ${essentials.maxUsers} users / ${essentials.maxDevices} devices. No separate CAL required.`
+    );
+  }
+
   return {
     serverId: server.id,
     serverName: server.name,

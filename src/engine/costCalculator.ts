@@ -10,6 +10,7 @@ import { calculateWindowsLicensing } from "./windowsCalculator";
 import { calculateWindowsCAL } from "./calCalculator";
 import { calculateRDSCAL } from "./rdsCalculator";
 import { calculateExchange } from "./exchangeCalculator";
+import { calculateSQL } from "./sqlCalculator";
 
 export interface CostInputs {
   assessment: Assessment;
@@ -54,6 +55,12 @@ export function calculateCost({ assessment, pricing, currency }: CostInputs): Co
   const priceExchEnt = findPrice(pricing, (p) => p.sku === "EXCH-ENT");
   const priceExchStdCAL = findPrice(pricing, (p) => p.sku === "EXCH-SCAL");
   const priceExchEntCAL = findPrice(pricing, (p) => p.sku === "EXCH-ECAL");
+  const priceSqlStdCore = findPrice(pricing, (p) => p.sku === "SQL-STD-2C");
+  const priceSqlEntCore = findPrice(pricing, (p) => p.sku === "SQL-ENT-2C");
+  const priceSqlServer = findPrice(pricing, (p) => p.sku === "SQL-STD-SRV");
+  const priceSqlCAL = findPrice(pricing, (p) => p.sku === "SQL-CAL");
+
+  const sql = calculateSQL(assessment.sql);
 
   const lines: CostLine[] = [
     lineOrZero("Windows Server Standard (per core)", win.requiredStandardCoreLicenses, priceStdCore, currency, true),
@@ -68,6 +75,10 @@ export function calculateCost({ assessment, pricing, currency }: CostInputs): Co
     lineOrZero("Exchange Server Enterprise", exch.serverLicenseByEdition.enterprise, priceExchEnt, currency),
     lineOrZero("Exchange Standard CAL", exch.standardCALRequired, priceExchStdCAL, currency),
     lineOrZero("Exchange Enterprise CAL", exch.enterpriseCALRequired, priceExchEntCAL, currency),
+    lineOrZero("SQL Server Standard (per core)", sql.totalStandardCoresRequired, priceSqlStdCore, currency, true),
+    lineOrZero("SQL Server Enterprise (per core)", sql.totalEnterpriseCoresRequired, priceSqlEntCore, currency, true),
+    lineOrZero("SQL Server Standard (Server license)", sql.serverLicensesRequired, priceSqlServer, currency),
+    lineOrZero("SQL Server CAL", sql.calRequired, priceSqlCAL, currency),
   ].filter((l) => l.quantity > 0);
 
   const total = lines.reduce((s, l) => s + l.total, 0);
@@ -111,5 +122,8 @@ function matchGapToPricing(product: string, pricing: ProductPricing[]): ProductP
   if (p.includes("exchange server enterprise")) return pricing.find((x) => x.sku === "EXCH-ENT");
   if (p.includes("exchange standard cal")) return pricing.find((x) => x.sku === "EXCH-SCAL");
   if (p.includes("exchange enterprise cal")) return pricing.find((x) => x.sku === "EXCH-ECAL");
+  if (p.includes("sql server standard")) return pricing.find((x) => x.sku === "SQL-STD-2C");
+  if (p.includes("sql server enterprise")) return pricing.find((x) => x.sku === "SQL-ENT-2C");
+  if (p.includes("sql server cal")) return pricing.find((x) => x.sku === "SQL-CAL");
   return undefined;
 }

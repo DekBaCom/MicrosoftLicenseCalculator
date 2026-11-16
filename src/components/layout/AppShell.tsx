@@ -6,6 +6,7 @@ import {
   FolderOpenDot,
   Server,
   Mail,
+  Database,
   Users,
   Calculator,
   Lightbulb,
@@ -16,6 +17,7 @@ import {
   Menu,
   X,
   ChevronDown,
+  Cloud,
 } from "lucide-react";
 import clsx from "clsx";
 import { useApp } from "../../state/AppContext";
@@ -26,6 +28,7 @@ const nav = [
   { to: "/assessments", label: "Assessments", icon: FolderOpenDot },
   { to: "/windows", label: "Windows Server", icon: Server },
   { to: "/exchange", label: "Exchange Server", icon: Mail },
+  { to: "/sql", label: "SQL Server", icon: Database },
   { to: "/cal-rds", label: "CAL & RDS", icon: Users },
   { to: "/calculator", label: "License Calculator", icon: Calculator },
   { to: "/recommendations", label: "Recommendations", icon: Lightbulb },

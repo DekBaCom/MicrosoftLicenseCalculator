@@ -6,6 +6,8 @@ import { calculateWindowsLicensing } from "../engine/windowsCalculator";
 import { calculateWindowsCAL } from "../engine/calCalculator";
 import { calculateRDSCAL } from "../engine/rdsCalculator";
 import { calculateExchange } from "../engine/exchangeCalculator";
+import { calculateSQL } from "../engine/sqlCalculator";
+import { calculateAHB } from "../engine/ahbCalculator";
 import { calculateCost } from "../engine/costCalculator";
 
 function toSheet(data: Record<string, unknown>[]): XLSX.WorkSheet {
@@ -77,6 +79,29 @@ export function exportAssessmentXLSX(
     { Metric: "Enterprise CAL", Value: exch.enterpriseCALRequired },
     { Metric: "DAG Copies", Value: exch.dagCopies },
   ]), "Exchange Licensing");
+
+  // SQL
+  const sql = calculateSQL(a.sql);
+  XLSX.utils.book_append_sheet(wb, toSheet((a.sql?.servers ?? []).map((s) => ({ ...s }))), "SQL Servers");
+  XLSX.utils.book_append_sheet(wb, toSheet([
+    { Metric: "Standard Cores Required", Value: sql.totalStandardCoresRequired },
+    { Metric: "Enterprise Cores Required", Value: sql.totalEnterpriseCoresRequired },
+    { Metric: "Server Licenses Required", Value: sql.serverLicensesRequired },
+    { Metric: "CAL Required", Value: sql.calRequired },
+  ]), "SQL Licensing");
+
+  // AHB
+  const ahb = calculateAHB(a);
+  XLSX.utils.book_append_sheet(wb, toSheet([
+    { Metric: "Enabled", Value: a.environment.azureHybridBenefit ? "Yes" : "No" },
+    { Metric: "Windows VMs Covered", Value: ahb.windowsVMsCoverableByAHB },
+    { Metric: "Windows SA Licenses Consumed", Value: ahb.windowsLicensesConsumed },
+    { Metric: "SQL vCores Covered", Value: Math.round(ahb.sqlvCoresCoverableByAHB) },
+    { Metric: "SQL SA Licenses Consumed", Value: ahb.sqlLicensesConsumed },
+    { Metric: "Target Windows vCores", Value: a.environment.azureWindowsVMvCores ?? 0 },
+    { Metric: "Target SQL vCores", Value: a.environment.azureSqlVCores ?? 0 },
+    { Metric: "SQL Tier", Value: a.environment.azureSqlTier ?? "GeneralPurpose" },
+  ]), "Azure Hybrid Benefit");
 
   XLSX.utils.book_append_sheet(wb, toSheet(a.inventory.map((i) => ({ ...i }))), "Current License");
 

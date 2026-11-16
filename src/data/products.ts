@@ -4,6 +4,8 @@ export const PRODUCT_CATEGORIES = [
   "RDS",
   "Exchange Server",
   "Exchange CAL",
+  "SQL Server",
+  "SQL CAL",
   "Other",
 ] as const;
 

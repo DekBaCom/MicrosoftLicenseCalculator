@@ -1,5 +1,6 @@
 import type { Assessment, GapLine, Recommendation } from "../types";
 import { calculateWindowsLicensing } from "./windowsCalculator";
+import { calculateAHB } from "./ahbCalculator";
 import { DATACENTER_VM_BREAKPOINT } from "../data/licenseRules";
 
 export function generateRecommendations(a: Assessment, gaps: GapLine[]): Recommendation[] {
@@ -59,6 +60,49 @@ export function generateRecommendations(a: Assessment, gaps: GapLine[]): Recomme
       gap: 2 - dagMembers,
       action: `DAG is enabled but only ${dagMembers} server(s) marked as DAG members. Add at least one more for HA.`,
       priority: "High",
+    });
+  }
+
+  // SQL optimization — flag Standard servers above 32-core cap
+  if (a.sql) {
+    for (const s of a.sql.servers) {
+      if (s.edition === "Standard" && s.cores > 32) {
+        recs.push({
+          id: `rec-sql-cap-${s.id}`,
+          product: `SQL Server Standard — ${s.name}`,
+          current: s.cores,
+          required: 32,
+          gap: s.cores - 32,
+          action: `SQL Standard caps at 32 licensed cores. Consider SQL Enterprise or splitting the workload.`,
+          priority: "Medium",
+        });
+      }
+      if (s.passiveFailover && !s.hasSoftwareAssurance) {
+        recs.push({
+          id: `rec-sql-sa-${s.id}`,
+          product: `SQL Server SA — ${s.name}`,
+          current: 0,
+          required: 1,
+          gap: 1,
+          action: `Add Software Assurance to cover the passive failover replica at no extra licensing cost.`,
+          priority: "Medium",
+        });
+      }
+    }
+  }
+
+  // Azure Hybrid Benefit opportunity
+  const ahb = calculateAHB(a);
+  if (a.environment.azureHybridBenefit && (ahb.windowsVMsCoverableByAHB > 0 || ahb.sqlvCoresCoverableByAHB > 0)) {
+    recs.push({
+      id: `rec-ahb`,
+      product: "Azure Hybrid Benefit",
+      current: 0,
+      required: ahb.windowsVMsCoverableByAHB,
+      gap: 0,
+      action: `Apply AHB — covers ${ahb.windowsVMsCoverableByAHB} Azure VM(s) and ${Math.round(ahb.sqlvCoresCoverableByAHB)} SQL vCore(s) with existing SA licenses.`,
+      priority: "Low",
+      note: "Requires active Software Assurance on the on-prem licenses.",
     });
   }
 

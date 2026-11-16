@@ -183,6 +183,14 @@ function buildBlankAssessment(): Assessment {
       publicFolder: false,
       calType: "Standard",
     },
+    sql: {
+      servers: [],
+      calUsers: 0,
+      ownedServerCAL: 0,
+      ownedStandardCores: 0,
+      ownedEnterpriseCores: 0,
+      ownedServerLicenses: 0,
+    },
     inventory: [],
   };
 }

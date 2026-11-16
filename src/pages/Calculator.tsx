@@ -8,6 +8,7 @@ import { EmptyState } from "../components/common/EmptyState";
 import { useApp } from "../state/AppContext";
 import { analyzeGaps } from "../engine/gapAnalyzer";
 import { calculateCost, calculateGapCost } from "../engine/costCalculator";
+import { calculateAHB } from "../engine/ahbCalculator";
 import { formatCurrency, formatNumber } from "../utils/format";
 import { StatusBadge } from "../components/common/StatusBadge";
 import type { Currency, Scenario } from "../types";
@@ -27,7 +28,8 @@ export default function Calculator() {
     const gaps = analyzeGaps(current);
     const cost = calculateCost({ assessment: current, pricing, currency });
     const gapCost = calculateGapCost(gaps, pricing, currency);
-    return { gaps, cost, gapCost };
+    const ahb = calculateAHB(current);
+    return { gaps, cost, gapCost, ahb };
   }, [current, pricing, currency]);
 
   const scenarioResults = useMemo(() => {
@@ -81,6 +83,23 @@ export default function Calculator() {
         <KpiCard label="Potential Optimization" value={formatCurrency(Math.max(0, base.cost.total - base.gapCost.total) * 0.1, currency)} sub="Illustrative — 10% of required" tone="success" />
         <KpiCard label="Line Items" value={formatNumber(base.cost.lines.length)} />
       </div>
+
+      {current.environment.azureHybridBenefit && (
+        <div className="card p-4 mb-4">
+          <h3 className="font-semibold text-slate-900 mb-3">Azure Hybrid Benefit</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <KpiCard label="AHB Windows VMs Covered" value={formatNumber(base.ahb.windowsVMsCoverableByAHB)} tone="success" sub={`${formatNumber(base.ahb.windowsLicensesConsumed)} WS cores with SA`} />
+            <KpiCard label="AHB SQL vCores Covered" value={formatNumber(Math.round(base.ahb.sqlvCoresCoverableByAHB))} tone="success" sub={`${formatNumber(base.ahb.sqlLicensesConsumed)} SQL cores with SA`} />
+            <KpiCard label="Target Windows vCores" value={formatNumber(current.environment.azureWindowsVMvCores ?? 0)} />
+            <KpiCard label="Target SQL vCores" value={formatNumber(current.environment.azureSqlVCores ?? 0)} />
+          </div>
+          {base.ahb.notes.length > 0 && (
+            <ul className="mt-2 text-xs text-slate-600 list-disc pl-5">
+              {base.ahb.notes.map((n, i) => <li key={i}>{n}</li>)}
+            </ul>
+          )}
+        </div>
+      )}
 
       <div className="card overflow-hidden mb-4">
         <div className="p-3 border-b border-slate-200 font-semibold text-slate-900">License Gap Analysis</div>
