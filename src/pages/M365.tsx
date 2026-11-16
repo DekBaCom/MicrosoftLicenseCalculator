@@ -6,7 +6,7 @@ import { EmptyState } from "../components/common/EmptyState";
 import { Disclaimer } from "../components/common/Disclaimer";
 import { KpiCard } from "../components/common/KpiCard";
 import { useApp } from "../state/AppContext";
-import { M365_PLANS, findPlan } from "../data/m365Plans";
+import { M365_PLANS, findPlan, findOverlaps } from "../data/m365Plans";
 import { calculateM365 } from "../engine/m365Calculator";
 import { formatCurrency, formatNumber } from "../utils/format";
 import type { M365Assessment, M365LineItem, M365PlanId } from "../types";
@@ -44,6 +44,7 @@ export default function M365Page() {
   const removeLine = (i: number) =>
     persist({ ...m365, licenses: m365.licenses.filter((_, j) => i !== j) });
 
+  const overlaps = findOverlaps(m365.licenses.filter((l) => l.users > 0).map((l) => l.planId));
   const totalUsers = m365.licenses.reduce((s, l) => s + l.users, 0);
 
   // Group plans by category for the dropdown.
@@ -67,6 +68,15 @@ export default function M365Page() {
         <KpiCard label="Monthly Cost" value={formatCurrency(summary.totalMonthly, summary.currency)} tone="warn" />
         <KpiCard label="Annual Cost" value={formatCurrency(summary.totalAnnual, summary.currency)} tone="warn" />
       </div>
+
+      {overlaps.length > 0 && (
+        <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+          <div className="font-semibold mb-1">Overlapping licenses</div>
+          <ul className="list-disc pl-5 space-y-0.5">
+            {overlaps.map((o) => <li key={o}>{o}</li>)}
+          </ul>
+        </div>
+      )}
 
       <div className="card overflow-hidden mb-4">
         <div className="p-3 border-b border-slate-200 font-semibold text-slate-900">M365 licenses</div>
@@ -177,6 +187,7 @@ function ComparisonMatrix({ users, currency }: { users: number; currency: "THB" 
     "o365-e5",
     "m365-e3",
     "m365-e5",
+    "m365-e7",
     "m365-f3",
   ];
 

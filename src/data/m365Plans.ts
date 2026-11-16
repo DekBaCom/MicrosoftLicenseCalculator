@@ -1,4 +1,4 @@
-import type { M365Plan } from "../types";
+import type { M365Plan, M365PlanId } from "../types";
 
 /**
  * Microsoft 365 plan catalog.
@@ -56,6 +56,14 @@ export const M365_PLANS: M365Plan[] = [
     pricePerUserMonth: 57,
     currency: "USD",
     includes: ["M365 E3", "O365 E5", "EMS E5", "Defender for Endpoint P2", "Defender for Cloud Apps", "Entra ID P2"],
+  },
+  {
+    id: "m365-e7",
+    name: "Microsoft 365 E7",
+    category: "Enterprise Suite",
+    pricePerUserMonth: 99,
+    currency: "USD",
+    includes: ["Microsoft 365 E5", "Microsoft 365 Copilot", "Entra Suite", "Agent 365", "Security Copilot (eligible)"],
   },
 
   // ---------------- Business ----------------
@@ -193,7 +201,74 @@ export const M365_PLANS: M365Plan[] = [
     currency: "USD",
     includes: ["MDM/MAM", "Device compliance", "Endpoint analytics"],
   },
+
+  // ---------------- Suites (add-on packs) ----------------
+  {
+    id: "defender-suite",
+    name: "Microsoft Defender Suite",
+    category: "Suite",
+    pricePerUserMonth: 12,
+    currency: "USD",
+    requiresBasePlan: true,
+    includes: ["Entra ID P2", "Defender for Identity", "Defender for Endpoint P2", "Defender for Office 365 P2", "Defender for Cloud Apps"],
+  },
+  {
+    id: "purview-suite",
+    name: "Microsoft Purview Suite",
+    category: "Suite",
+    pricePerUserMonth: 12,
+    currency: "USD",
+    requiresBasePlan: true,
+    includes: ["Information Protection", "Data Loss Prevention", "Insider Risk", "eDiscovery & Audit", "Records Management"],
+  },
+  {
+    id: "entra-suite",
+    name: "Microsoft Entra Suite",
+    category: "Suite",
+    pricePerUserMonth: 12,
+    currency: "USD",
+    requiresBasePlan: true,
+    includes: ["Entra ID P1 + Governance", "Private Access", "Internet Access", "ID Protection", "Verified ID"],
+  },
+  {
+    id: "e5-ipg",
+    name: "Microsoft 365 E5 Information Protection & Governance",
+    category: "Suite",
+    pricePerUserMonth: 10,
+    currency: "USD",
+    requiresBasePlan: true,
+    includes: ["Sensitivity labels (auto)", "DLP", "Records & retention", "Advanced Message Encryption"],
+  },
 ];
+
+/**
+ * Plans already covered by another plan. Selecting both means paying twice.
+ * Based on Microsoft's published plan comparisons; confirm against the customer's agreement.
+ */
+const COVERS: Partial<Record<M365PlanId, M365PlanId[]>> = {
+  "m365-e7": [
+    "m365-e5", "m365-e3", "o365-e5", "o365-e3", "ems-e5", "ems-e3",
+    "copilot-m365", "entra-suite", "defender-suite", "purview-suite", "e5-ipg",
+    "defender-office-p1", "defender-office-p2", "exchange-online-p1", "exchange-online-p2", "intune-std",
+  ],
+  "m365-e5": [
+    "m365-e3", "o365-e5", "o365-e3", "ems-e5", "ems-e3",
+    "defender-suite", "purview-suite", "e5-ipg",
+    "defender-office-p1", "defender-office-p2", "exchange-online-p1", "exchange-online-p2", "intune-std",
+  ],
+};
+
+export function findOverlaps(planIds: M365PlanId[]): string[] {
+  const selected = new Set(planIds);
+  const out: string[] = [];
+  for (const [id, covered] of Object.entries(COVERS) as [M365PlanId, M365PlanId[]][]) {
+    if (!selected.has(id)) continue;
+    for (const c of covered) {
+      if (selected.has(c)) out.push(`${findPlan(id)?.name} already includes ${findPlan(c)?.name} — remove the duplicate to avoid paying twice.`);
+    }
+  }
+  return out;
+}
 
 export function findPlan(id: string): M365Plan | undefined {
   return M365_PLANS.find((p) => p.id === id);

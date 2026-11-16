@@ -175,6 +175,7 @@ export interface SQLCoreLicenseResult {
 export type M365PlanId =
   | "m365-e3"
   | "m365-e5"
+  | "m365-e7"
   | "m365-f3"
   | "m365-f1"
   | "o365-e3"
@@ -193,7 +194,11 @@ export type M365PlanId =
   | "copilot-m365"
   | "defender-office-p1"
   | "defender-office-p2"
-  | "intune-std";
+  | "intune-std"
+  | "defender-suite"
+  | "purview-suite"
+  | "entra-suite"
+  | "e5-ipg";
 
 export type M365Category =
   | "Enterprise Suite"
@@ -204,7 +209,8 @@ export type M365Category =
   | "Teams"
   | "Copilot"
   | "Security"
-  | "Management";
+  | "Management"
+  | "Suite";
 
 export interface M365Plan {
   id: M365PlanId;

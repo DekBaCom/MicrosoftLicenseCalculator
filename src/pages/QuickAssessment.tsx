@@ -7,7 +7,7 @@ import { KpiCard } from "../components/common/KpiCard";
 import { Disclaimer } from "../components/common/Disclaimer";
 import { useApp } from "../state/AppContext";
 import { buildBlankAssessment } from "../data/blankAssessment";
-import { M365_PLANS } from "../data/m365Plans";
+import { M365_PLANS, findOverlaps } from "../data/m365Plans";
 import { WINDOWS11_EDITIONS, WINDOWS11_REQUIREMENTS } from "../data/windows11";
 import { calculateCost } from "../engine/costCalculator";
 import { calculateWindowsLicensing } from "../engine/windowsCalculator";
@@ -392,6 +392,7 @@ export default function QuickAssessment() {
             lines={[
               `${formatCurrency(result.m365.totalMonthly, currency)} / month`,
               `${formatCurrency(result.m365.totalAnnual, currency)} / year (subscription)`,
+              ...findOverlaps(m365.filter((l) => l.users > 0).map((l) => l.planId)),
             ]}
           />
         </Section>
