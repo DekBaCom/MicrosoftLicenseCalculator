@@ -29,6 +29,7 @@ import { KpiCard } from "../components/common/KpiCard";
 import { Disclaimer } from "../components/common/Disclaimer";
 import { EmptyState } from "../components/common/EmptyState";
 import { useApp } from "../state/AppContext";
+import { useI18n } from "../i18n";
 import { analyzeGaps } from "../engine/gapAnalyzer";
 import { calculateCost, calculateGapCost } from "../engine/costCalculator";
 import { calculateWindowsLicensing } from "../engine/windowsCalculator";
@@ -40,6 +41,7 @@ const PIE_COLORS = ["#10b981", "#f59e0b", "#ef4444", "#38bdf8"];
 
 export default function Dashboard() {
   const { current, assessments, pricing, settings } = useApp();
+  const { t } = useI18n();
 
   const data = useMemo(() => {
     if (!current) return null;
@@ -67,16 +69,16 @@ export default function Dashboard() {
     return (
       <>
         <PageHeader
-          title="Dashboard"
+          title={t("dashboard.title")}
           subtitle="Microsoft License Assessment overview."
           icon={<LayoutDashboard className="w-5 h-5" />}
         />
         <EmptyState
-          title="No assessment yet"
-          description="Start by creating a new customer assessment."
+          title={t("dashboard.empty.title")}
+          description={t("dashboard.empty.desc")}
           action={
             <Link to="/assessments/new" className="btn-primary">
-              <FilePlus2 className="w-4 h-4" /> New Assessment
+              <FilePlus2 className="w-4 h-4" /> {t("common.newAssessment")}
             </Link>
           }
         />
@@ -107,7 +109,7 @@ export default function Dashboard() {
   return (
     <>
       <PageHeader
-        title="Dashboard"
+        title={t("dashboard.title")}
         subtitle={`${current.customer.name} · ${assessments.length} assessment${assessments.length > 1 ? "s" : ""}`}
         icon={<LayoutDashboard className="w-5 h-5" />}
         actions={

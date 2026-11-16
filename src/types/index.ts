@@ -170,6 +170,79 @@ export interface SQLCoreLicenseResult {
   notes: string[];
 }
 
+// ------------------- Microsoft 365 -------------------
+
+export type M365PlanId =
+  | "m365-e3"
+  | "m365-e5"
+  | "m365-f3"
+  | "m365-f1"
+  | "o365-e3"
+  | "o365-e5"
+  | "ems-e3"
+  | "ems-e5"
+  | "biz-basic"
+  | "biz-standard"
+  | "biz-premium"
+  | "apps-biz"
+  | "apps-ent"
+  | "exchange-online-p1"
+  | "exchange-online-p2"
+  | "teams-ess"
+  | "teams-phone-std"
+  | "copilot-m365"
+  | "defender-office-p1"
+  | "defender-office-p2"
+  | "intune-std";
+
+export type M365Category =
+  | "Enterprise Suite"
+  | "Frontline"
+  | "Business"
+  | "Apps"
+  | "Exchange Online"
+  | "Teams"
+  | "Copilot"
+  | "Security"
+  | "Management";
+
+export interface M365Plan {
+  id: M365PlanId;
+  name: string;
+  category: M365Category;
+  pricePerUserMonth: number;
+  currency: Currency;
+  includes: string[]; // Short feature bullets
+  requiresBasePlan?: boolean; // Add-ons that stack on E3/E5/F3
+}
+
+export interface M365LineItem {
+  planId: M365PlanId;
+  users: number;
+}
+
+export interface M365Assessment {
+  licenses: M365LineItem[];
+  annualBilling: boolean; // vs monthly
+  notes?: string;
+}
+
+export interface M365CostLine {
+  planName: string;
+  users: number;
+  unitPricePerMonth: number;
+  monthlyTotal: number;
+  annualTotal: number;
+  currency: Currency;
+}
+
+export interface M365CostSummary {
+  currency: Currency;
+  lines: M365CostLine[];
+  totalMonthly: number;
+  totalAnnual: number;
+}
+
 // ------------------- Azure Hybrid Benefit -------------------
 
 export interface AHBResult {
@@ -340,6 +413,7 @@ export interface Assessment {
   rds: RDSCALInput;
   exchange: ExchangeAssessment;
   sql?: SQLAssessment;
+  m365?: M365Assessment;
   inventory: LicenseInventoryItem[];
   status: AssessmentStatus;
   createdAt: string;

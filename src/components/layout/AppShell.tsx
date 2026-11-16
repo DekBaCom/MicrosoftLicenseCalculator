@@ -18,30 +18,35 @@ import {
   Menu,
   X,
   ChevronDown,
+  Languages,
+  Cloud,
 } from "lucide-react";
 import clsx from "clsx";
 import { useApp } from "../../state/AppContext";
+import { useI18n } from "../../i18n";
 
 const nav = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { to: "/assessments/new", label: "New Assessment", icon: FilePlus2 },
-  { to: "/assessments", label: "Assessments", icon: FolderOpenDot },
-  { to: "/windows", label: "Windows Server", icon: Server },
-  { to: "/exchange", label: "Exchange Server", icon: Mail },
-  { to: "/sql", label: "SQL Server", icon: Database },
-  { to: "/cal-rds", label: "CAL & RDS", icon: Users },
-  { to: "/calculator", label: "License Calculator", icon: Calculator },
-  { to: "/recommendations", label: "Recommendations", icon: Lightbulb },
-  { to: "/reports", label: "Reports", icon: FileText },
-  { to: "/export", label: "Export", icon: FileDown },
-  { to: "/catalog", label: "License Catalog", icon: BookOpen },
-  { to: "/data-collection", label: "วิธีเก็บข้อมูล Host", icon: BookOpenCheck },
-  { to: "/settings", label: "Settings", icon: SettingsIcon },
+  { to: "/", key: "nav.dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/assessments/new", key: "nav.newAssessment", icon: FilePlus2 },
+  { to: "/assessments", key: "nav.assessments", icon: FolderOpenDot },
+  { to: "/windows", key: "nav.windows", icon: Server },
+  { to: "/exchange", key: "nav.exchange", icon: Mail },
+  { to: "/sql", key: "nav.sql", icon: Database },
+  { to: "/m365", key: "nav.m365", icon: Cloud },
+  { to: "/cal-rds", key: "nav.calrds", icon: Users },
+  { to: "/calculator", key: "nav.calculator", icon: Calculator },
+  { to: "/recommendations", key: "nav.recommendations", icon: Lightbulb },
+  { to: "/reports", key: "nav.reports", icon: FileText },
+  { to: "/export", key: "nav.export", icon: FileDown },
+  { to: "/catalog", key: "nav.catalog", icon: BookOpen },
+  { to: "/data-collection", key: "nav.dataCollection", icon: BookOpenCheck },
+  { to: "/settings", key: "nav.settings", icon: SettingsIcon },
 ];
 
 export function AppShell() {
   const [open, setOpen] = useState(false);
   const { current, assessments, setCurrentId } = useApp();
+  const { t, lang, setLang } = useI18n();
   const [picker, setPicker] = useState(false);
   const loc = useLocation();
 
@@ -95,7 +100,7 @@ export function AppShell() {
               }
             >
               <item.icon className="w-4 h-4" />
-              {item.label}
+              {t(item.key)}
             </NavLink>
           ))}
         </nav>
@@ -124,6 +129,16 @@ export function AppShell() {
           </div>
 
           <div className="ml-auto flex items-center gap-2">
+            {/* Language toggle */}
+            <button
+              onClick={() => setLang(lang === "en" ? "th" : "en")}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-sm"
+              title={t("lang.label")}
+            >
+              <Languages className="w-4 h-4 text-brand-700" />
+              <span className="font-medium">{lang === "en" ? "EN" : "TH"}</span>
+            </button>
+
             {/* Current assessment picker */}
             <div className="relative">
               <button
@@ -170,7 +185,7 @@ export function AppShell() {
             <Outlet />
           </div>
           <footer className="border-t border-slate-200 bg-white py-3 px-4 md:px-6 text-xs text-slate-500 text-center">
-            Contribute by Mr. Abdulloh Etaeluengoh
+            {t("app.footer")}
           </footer>
         </main>
       </div>

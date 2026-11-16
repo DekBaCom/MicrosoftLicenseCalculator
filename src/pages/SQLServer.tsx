@@ -5,6 +5,7 @@ import { PageHeader } from "../components/common/PageHeader";
 import { EmptyState } from "../components/common/EmptyState";
 import { Disclaimer } from "../components/common/Disclaimer";
 import { KpiCard } from "../components/common/KpiCard";
+import { ImportServersButton } from "../components/common/ImportServersButton";
 import { useApp } from "../state/AppContext";
 import { calculateSQL } from "../engine/sqlCalculator";
 import { uid } from "../utils/id";
@@ -69,7 +70,15 @@ export default function SQLServerPage() {
         title="SQL Server"
         subtitle="SQL Server licensing — per-core and Server+CAL models"
         icon={<Database className="w-5 h-5" />}
-        actions={<button className="btn-primary" onClick={addServer}><Plus className="w-4 h-4" /> Add SQL Server</button>}
+        actions={
+          <>
+            <ImportServersButton
+              mode="sql"
+              onImport={(imported) => persist({ ...sql, servers: [...sql.servers, ...imported] })}
+            />
+            <button className="btn-primary" onClick={addServer}><Plus className="w-4 h-4" /> Add SQL Server</button>
+          </>
+        }
       />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">

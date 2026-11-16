@@ -11,6 +11,7 @@ const Assessments = lazy(() => import("./pages/Assessments"));
 const WindowsServer = lazy(() => import("./pages/WindowsServer"));
 const ExchangeServer = lazy(() => import("./pages/ExchangeServer"));
 const SQLServerPage = lazy(() => import("./pages/SQLServer"));
+const M365Page = lazy(() => import("./pages/M365"));
 const CALRDS = lazy(() => import("./pages/CALRDS"));
 const Calculator = lazy(() => import("./pages/Calculator"));
 const Recommendations = lazy(() => import("./pages/Recommendations"));
@@ -45,6 +46,7 @@ export default function App() {
           <Route path="windows" element={<WindowsServer />} />
           <Route path="exchange" element={<ExchangeServer />} />
           <Route path="sql" element={<SQLServerPage />} />
+          <Route path="m365" element={<M365Page />} />
           <Route path="cal-rds" element={<CALRDS />} />
           <Route path="calculator" element={<Calculator />} />
           <Route path="recommendations" element={<Recommendations />} />

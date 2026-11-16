@@ -8,6 +8,7 @@ import { calculateRDSCAL } from "../engine/rdsCalculator";
 import { calculateExchange } from "../engine/exchangeCalculator";
 import { calculateSQL } from "../engine/sqlCalculator";
 import { calculateAHB } from "../engine/ahbCalculator";
+import { calculateM365 } from "../engine/m365Calculator";
 import { calculateCost } from "../engine/costCalculator";
 
 function toSheet(data: Record<string, unknown>[]): XLSX.WorkSheet {
@@ -89,6 +90,12 @@ export function exportAssessmentXLSX(
     { Metric: "Server Licenses Required", Value: sql.serverLicensesRequired },
     { Metric: "CAL Required", Value: sql.calRequired },
   ]), "SQL Licensing");
+
+  // Microsoft 365
+  const m365 = calculateM365({ m365: a.m365, currency });
+  if (m365.lines.length) {
+    XLSX.utils.book_append_sheet(wb, toSheet(m365.lines.map((l) => ({ ...l }))), "Microsoft 365");
+  }
 
   // AHB
   const ahb = calculateAHB(a);

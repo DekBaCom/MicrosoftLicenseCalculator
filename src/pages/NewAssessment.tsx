@@ -7,6 +7,7 @@ import { useApp } from "../state/AppContext";
 import type { Assessment, Hypervisor, CloudProvider, WindowsServer, WindowsVersion, WindowsEdition, LicenseInventoryItem, ExchangeServer } from "../types";
 import { uid } from "../utils/id";
 import { FilePlus2, Plus, Trash2, Copy, ChevronLeft, ChevronRight, Save } from "lucide-react";
+import { ImportServersButton } from "../components/common/ImportServersButton";
 import { INDUSTRIES, COUNTRIES } from "../data/products";
 import { analyzeGaps } from "../engine/gapAnalyzer";
 import { calculateWindowsLicensing } from "../engine/windowsCalculator";
@@ -320,12 +321,18 @@ function StepWindows({ draft, setDraft }: { draft: Assessment; setDraft: React.D
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
           <h3 className="font-semibold text-slate-900">Windows Server inventory</h3>
           <p className="text-xs text-slate-500">Add every physical host and significant VM for an accurate core calculation.</p>
         </div>
-        <button className="btn-primary" onClick={add}><Plus className="w-4 h-4" /> Add Server</button>
+        <div className="flex gap-2">
+          <ImportServersButton
+            mode="windows"
+            onImport={(imported) => setServers([...servers, ...imported])}
+          />
+          <button className="btn-primary" onClick={add}><Plus className="w-4 h-4" /> Add Server</button>
+        </div>
       </div>
       <div className="overflow-x-auto scrollbar-thin -mx-4 px-4">
         <table className="table min-w-[1100px]">
