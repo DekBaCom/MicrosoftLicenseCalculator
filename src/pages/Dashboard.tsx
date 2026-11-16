@@ -39,7 +39,7 @@ import { formatCurrency, formatNumber } from "../utils/format";
 const PIE_COLORS = ["#10b981", "#f59e0b", "#ef4444", "#38bdf8"];
 
 export default function Dashboard() {
-  const { current, assessments, pricing, settings, loadDemo } = useApp();
+  const { current, assessments, pricing, settings } = useApp();
 
   const data = useMemo(() => {
     if (!current) return null;
@@ -72,17 +72,12 @@ export default function Dashboard() {
           icon={<LayoutDashboard className="w-5 h-5" />}
         />
         <EmptyState
-          title="No assessment selected"
-          description="Create a new assessment or load the demo to populate the dashboard with realistic data."
+          title="No assessment yet"
+          description="Start by creating a new customer assessment."
           action={
-            <div className="flex gap-2">
-              <button className="btn-primary" onClick={() => loadDemo()}>
-                Load Demo Assessment
-              </button>
-              <Link to="/assessments/new" className="btn-secondary">
-                <FilePlus2 className="w-4 h-4" /> New Assessment
-              </Link>
-            </div>
+            <Link to="/assessments/new" className="btn-primary">
+              <FilePlus2 className="w-4 h-4" /> New Assessment
+            </Link>
           }
         />
       </>

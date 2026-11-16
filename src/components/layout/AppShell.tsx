@@ -170,6 +170,9 @@ export function AppShell() {
           <div className="p-4 md:p-6 max-w-[1500px] mx-auto">
             <Outlet />
           </div>
+          <footer className="border-t border-slate-200 bg-white py-3 px-4 md:px-6 text-xs text-slate-500 text-center">
+            Contribute by Mr. Abdulloh Etaeluengoh
+          </footer>
         </main>
       </div>
     </div>

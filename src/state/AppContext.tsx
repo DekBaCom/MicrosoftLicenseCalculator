@@ -2,7 +2,6 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from "
 import type { Assessment, Currency, ProductPricing } from "../types";
 import { storage } from "../utils/storage";
 import { DEFAULT_PRICING } from "../data/pricing";
-import { buildDemoAssessment } from "../data/demo";
 
 interface Settings {
   companyName: string;
@@ -24,7 +23,6 @@ interface AppApi extends AppState {
   updateAssessment: (a: Assessment) => void;
   deleteAssessment: (id: string) => void;
   duplicateAssessment: (id: string) => Assessment | null;
-  loadDemo: () => Assessment;
   setPricing: (p: ProductPricing[]) => void;
   updateSettings: (s: Partial<Settings>) => void;
   exportJSON: () => string;
@@ -53,18 +51,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettingsState] = useState<Settings>(() =>
     storage.get<Settings>("settings", defaultSettings)
   );
-
-  // Seed demo on first launch
-  useEffect(() => {
-    const seeded = storage.get<boolean>("seeded", false);
-    if (!seeded && assessments.length === 0) {
-      const demo = buildDemoAssessment();
-      setAssessments([demo]);
-      setCurrentIdState(demo.id);
-      storage.set("seeded", true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => storage.set("assessments", assessments), [assessments]);
   useEffect(() => storage.set("currentId", currentId), [currentId]);
@@ -109,12 +95,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       copy.status = "Draft";
       setAssessments((prev) => [copy, ...prev]);
       return copy;
-    },
-    loadDemo: () => {
-      const demo = buildDemoAssessment();
-      setAssessments((prev) => [demo, ...prev]);
-      setCurrentIdState(demo.id);
-      return demo;
     },
     setPricing: setPricingState,
     updateSettings: (s) => setSettingsState((prev) => ({ ...prev, ...s })),
