@@ -1,14 +1,20 @@
 import type { AHBResult, Assessment, LicenseInventoryItem } from "../types";
 import { AHB } from "../data/licenseRules";
 
-function ownedOf(inv: LicenseInventoryItem[], match: (i: LicenseInventoryItem) => boolean): number {
+function ownedSAOf(inv: LicenseInventoryItem[], match: (i: LicenseInventoryItem) => boolean): number {
   return inv.filter((i) => i.softwareAssurance && match(i)).reduce((s, i) => s + i.quantityOwned, 0);
 }
 
 /**
  * Translate on-prem licenses with Software Assurance into Azure coverage.
- * Windows Server: 16 WS licenses with SA cover up to 2 Azure VMs (shared across both).
- * SQL Server: 1 Enterprise/Standard core with SA → 16 vCores (GP) or 4 vCores (BC).
+ *
+ * Windows Server:
+ *   - 16 WS core licenses with SA → up to 2 small Azure VMs (≤8 vCPU each) OR 1 larger VM (≤16 vCPU).
+ *   - Standard is use-once (cannot stay on-prem AND Azure); Datacenter supports dual use.
+ *
+ * SQL Server (verified against Microsoft Learn / Azure Hybrid Benefit docs, Nov 2025):
+ *   GP vCores = 1 × SqlStd_SA_cores + 4 × SqlEnt_SA_cores   (normalized core formula)
+ *   BC vCores = GP vCores / 4                                (Business Critical = 4 NCs per vCore)
  */
 export function calculateAHB(a: Assessment): AHBResult {
   const env = a.environment;
@@ -24,7 +30,8 @@ export function calculateAHB(a: Assessment): AHBResult {
     };
   }
 
-  const wsLicensesSA = ownedOf(
+  // -------------------- Windows Server AHB --------------------
+  const wsLicensesSA = ownedSAOf(
     a.inventory,
     (i) => i.product === "Windows Server Standard" || i.product === "Windows Server Datacenter"
   );
@@ -33,29 +40,32 @@ export function calculateAHB(a: Assessment): AHBResult {
   ) * AHB.windowsVMsPer16Licenses;
 
   if (wsLicensesSA === 0) {
-    notes.push("No Windows Server licenses with Software Assurance found in inventory — AHB coverage = 0.");
+    notes.push("No Windows Server licenses with Software Assurance found — AHB coverage = 0 VMs.");
   } else {
     notes.push(
-      `${wsLicensesSA.toLocaleString()} WS licenses with SA → covers up to ${windowsVMsCoverableByAHB.toLocaleString()} Azure VMs.`
+      `${wsLicensesSA.toLocaleString()} WS core licenses with SA → covers up to ${windowsVMsCoverableByAHB.toLocaleString()} Azure VMs (≤8 vCPU each).`
     );
   }
 
-  // SQL Enterprise / Standard cores with SA
-  const sqlEntCoresSA = ownedOf(a.inventory, (i) => i.product === "SQL Server Enterprise");
-  const sqlStdCoresSA = ownedOf(a.inventory, (i) => i.product === "SQL Server Standard");
+  // -------------------- SQL Server AHB --------------------
+  const sqlEntCoresSA = ownedSAOf(a.inventory, (i) => i.product === "SQL Server Enterprise");
+  const sqlStdCoresSA = ownedSAOf(a.inventory, (i) => i.product === "SQL Server Standard");
+  const sqlLicensesConsumed = sqlEntCoresSA + sqlStdCoresSA;
 
   const tier = env.azureSqlTier ?? "GeneralPurpose";
+
+  // Normalized-core math from Microsoft Learn
   const entFactor = tier === "GeneralPurpose" ? AHB.sqlEnterpriseCoreToGPvCores : AHB.sqlEnterpriseCoreToBCvCores;
   const stdFactor = tier === "GeneralPurpose" ? AHB.sqlStandardCoreToGPvCores : AHB.sqlStandardCoreToBCvCores;
 
-  // Enterprise core → vCore ratios are expressed as "1 core → N vCores" in GP / "1 core → 4 vCores" in BC.
-  // We interpret this as coverage: 1 SQL Ent core with SA covers up to `entFactor` vCores for GP SKUs.
-  const sqlvCoresCoverableByAHB = sqlEntCoresSA * (entFactor >= 4 ? entFactor / 4 : 1) + sqlStdCoresSA * (stdFactor >= 4 ? stdFactor / 4 : 1);
-
-  const sqlLicensesConsumed = sqlEntCoresSA + sqlStdCoresSA;
+  const sqlvCoresCoverableByAHB = sqlEntCoresSA * entFactor + sqlStdCoresSA * stdFactor;
 
   if (sqlLicensesConsumed > 0) {
-    notes.push(`SQL SA cores → ${sqlvCoresCoverableByAHB.toLocaleString()} vCores (${tier}).`);
+    notes.push(
+      `${sqlLicensesConsumed.toLocaleString()} SQL cores with SA → ${Math.round(sqlvCoresCoverableByAHB).toLocaleString()} Azure SQL ${tier} vCores (Ent × ${entFactor} + Std × ${stdFactor}).`
+    );
+  } else {
+    notes.push("No SQL Server licenses with SA — Azure SQL AHB coverage = 0.");
   }
 
   return {

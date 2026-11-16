@@ -157,19 +157,25 @@ export const CAL_DEVICE_FACTOR = 1.2;
 
 // =====================================================================
 // Azure Hybrid Benefit (AHB)
-// Rules used by the Scenario / Calculator to translate on-prem licenses
-// into Azure VM coverage.
+//
+// Verified against Microsoft Learn (Nov 2025):
+//  - https://learn.microsoft.com/azure/azure-sql/azure-hybrid-benefit
+//  - https://www.microsoft.com/en-us/licensing/news/expanded-ahb-rights-for-microsoft-sql-server
+//
+// Normalized-core formula used by Azure SQL:
+//   GP vCores = (1 × StandardCores_with_SA) + (4 × EnterpriseCores_with_SA)
+//   BC vCores = GP vCores / 4   (Business Critical consumes 4 NCs per vCore)
 // =====================================================================
 export const AHB = {
-  /** Windows Server: 16 qualifying WS licenses with SA cover up to 2 VMs. */
+  /** Windows Server: 16 qualifying WS licenses with SA cover up to 2 small VMs (≤8 vCPU each). */
   windowsVMsPer16Licenses: 2,
   windowsLicensesPerVMGroup: 16,
-  /** SQL Enterprise core → vCores (Azure SQL General Purpose). */
-  sqlEnterpriseCoreToGPvCores: 16,
-  /** SQL Enterprise core → vCores (Azure SQL Business Critical). */
-  sqlEnterpriseCoreToBCvCores: 4,
-  /** SQL Standard core → vCores (Azure SQL General Purpose). */
-  sqlStandardCoreToGPvCores: 16,
-  /** SQL Standard core → vCores (Azure SQL Business Critical). */
-  sqlStandardCoreToBCvCores: 4,
+  /** SQL Enterprise core (SA) → vCores for Azure SQL General Purpose. */
+  sqlEnterpriseCoreToGPvCores: 4,
+  /** SQL Enterprise core (SA) → vCores for Azure SQL Business Critical. */
+  sqlEnterpriseCoreToBCvCores: 1,
+  /** SQL Standard core (SA) → vCores for Azure SQL General Purpose. */
+  sqlStandardCoreToGPvCores: 1,
+  /** SQL Standard core (SA) → vCores for Azure SQL Business Critical (0.25; often shown as 4 std → 1 BC vCore). */
+  sqlStandardCoreToBCvCores: 0.25,
 };
