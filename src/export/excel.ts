@@ -9,6 +9,7 @@ import { calculateExchange } from "../engine/exchangeCalculator";
 import { calculateSQL } from "../engine/sqlCalculator";
 import { calculateAHB } from "../engine/ahbCalculator";
 import { calculateM365 } from "../engine/m365Calculator";
+import { calculateWindows11 } from "../engine/windows11Calculator";
 import { calculateCost } from "../engine/costCalculator";
 
 function toSheet(data: Record<string, unknown>[]): XLSX.WorkSheet {
@@ -95,6 +96,20 @@ export function exportAssessmentXLSX(
   const m365 = calculateM365({ m365: a.m365, currency });
   if (m365.lines.length) {
     XLSX.utils.book_append_sheet(wb, toSheet(m365.lines.map((l) => ({ ...l }))), "Microsoft 365");
+  }
+
+  // Windows 11
+  if (a.windows11) {
+    const w11 = calculateWindows11(a.windows11, currency);
+    XLSX.utils.book_append_sheet(wb, toSheet([
+      { Metric: "Target Edition", Value: a.windows11.targetEdition },
+      { Metric: "Total Devices", Value: a.windows11.totalDevices },
+      { Metric: "Already on Windows 11", Value: w11.alreadyOnWindows11 },
+      { Metric: "In-place Upgrade Ready", Value: w11.inPlaceUpgrade },
+      { Metric: "Need Replacement", Value: w11.needReplacement },
+      { Metric: "Enterprise Users", Value: w11.enterpriseUsersRequired },
+      { Metric: "Annual Cost", Value: `${currency} ${w11.annualTotal.toFixed(0)}` },
+    ]), "Windows 11");
   }
 
   // AHB

@@ -24,6 +24,7 @@ import {
   Sun,
   Rocket,
   LineChart,
+  Zap,
 } from "lucide-react";
 import clsx from "clsx";
 import { useApp } from "../../state/AppContext";
@@ -33,6 +34,7 @@ import { applyTheme, getInitialTheme, type Theme } from "../../utils/theme";
 const nav = [
   { to: "/", key: "nav.dashboard", icon: LayoutDashboard, exact: true },
   { to: "/assessments/new", key: "nav.newAssessment", icon: FilePlus2 },
+  { to: "/quick", key: "nav.quick", icon: Zap },
   { to: "/templates", key: "nav.templates", icon: Rocket },
   { to: "/assessments", key: "nav.assessments", icon: FolderOpenDot },
   { to: "/windows", key: "nav.windows", icon: Server },

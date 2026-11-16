@@ -24,6 +24,7 @@ import {
   BadgeAlert,
   FilePlus2,
   Rocket,
+  Zap,
 } from "lucide-react";
 import { PageHeader } from "../components/common/PageHeader";
 import { KpiCard } from "../components/common/KpiCard";
@@ -81,6 +82,9 @@ export default function Dashboard() {
             <div className="flex flex-wrap justify-center gap-2">
               <Link to="/assessments/new" className="btn-primary">
                 <FilePlus2 className="w-4 h-4" /> {t("common.newAssessment")}
+              </Link>
+              <Link to="/quick" className="btn-secondary">
+                <Zap className="w-4 h-4" /> {t("nav.quick")}
               </Link>
               <Link to="/templates" className="btn-secondary">
                 <Rocket className="w-4 h-4" /> {t("nav.templates")}

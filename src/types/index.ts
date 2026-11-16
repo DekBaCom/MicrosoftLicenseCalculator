@@ -243,6 +243,33 @@ export interface M365CostSummary {
   totalAnnual: number;
 }
 
+// ------------------- Windows 11 -------------------
+
+export type Windows11Edition = "Pro" | "Enterprise E3" | "Enterprise E5";
+
+export interface Windows11Assessment {
+  totalDevices: number;
+  /** Devices still running Windows 10 (subset of totalDevices). */
+  devicesOnWindows10: number;
+  /** Windows 10 devices that already meet Windows 11 hardware requirements. */
+  devicesHardwareReady: number;
+  targetEdition: Windows11Edition;
+  /** Named users licensed for Windows Enterprise (per-user subscription). */
+  users: number;
+}
+
+export interface Windows11Result {
+  currency: Currency;
+  alreadyOnWindows11: number;
+  inPlaceUpgrade: number;
+  needReplacement: number;
+  enterpriseUsersRequired: number;
+  unitPricePerMonth: number;
+  monthlyTotal: number;
+  annualTotal: number;
+  notes: string[];
+}
+
 // ------------------- Azure Hybrid Benefit -------------------
 
 export interface AHBResult {
@@ -414,6 +441,7 @@ export interface Assessment {
   exchange: ExchangeAssessment;
   sql?: SQLAssessment;
   m365?: M365Assessment;
+  windows11?: Windows11Assessment;
   inventory: LicenseInventoryItem[];
   status: AssessmentStatus;
   createdAt: string;

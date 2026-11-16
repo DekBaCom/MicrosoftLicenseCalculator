@@ -2,7 +2,7 @@ import type { M365Assessment, M365CostSummary, M365CostLine, Currency } from "..
 import { findPlan } from "../data/m365Plans";
 
 // Rough FX conversion from USD baseline. Replace via Settings if needed.
-const FX_FROM_USD: Record<Currency, number> = {
+export const FX_FROM_USD: Record<Currency, number> = {
   USD: 1,
   THB: 36,
   EUR: 0.92,

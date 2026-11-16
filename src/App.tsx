@@ -20,6 +20,7 @@ const Export = lazy(() => import("./pages/Export"));
 const Catalog = lazy(() => import("./pages/Catalog"));
 const DataCollection = lazy(() => import("./pages/DataCollection"));
 const Templates = lazy(() => import("./pages/Templates"));
+const QuickAssessment = lazy(() => import("./pages/QuickAssessment"));
 const TCO = lazy(() => import("./pages/TCO"));
 const Settings = lazy(() => import("./pages/Settings"));
 
@@ -50,6 +51,7 @@ export default function App() {
           <Route path="sql" element={<SQLServerPage />} />
           <Route path="m365" element={<M365Page />} />
           <Route path="cal-rds" element={<CALRDS />} />
+          <Route path="quick" element={<QuickAssessment />} />
           <Route path="templates" element={<Templates />} />
           <Route path="calculator" element={<Calculator />} />
           <Route path="tco" element={<TCO />} />
