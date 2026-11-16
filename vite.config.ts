@@ -12,24 +12,10 @@ export default defineConfig(({ command }) => ({
   build: {
     outDir: "dist",
     sourcemap: false,
-    target: "es2020",
+    // Broad browser support: Chrome/Edge 79+, Firefox 72+, Safari/iOS 13+.
+    target: ["es2019", "chrome79", "edge79", "firefox72", "safari13"],
     chunkSizeWarningLimit: 900,
     cssCodeSplit: true,
-    rollupOptions: {
-      output: {
-        // Split large libraries into separate chunks so the initial load stays small.
-        manualChunks(id) {
-          if (!id.includes("node_modules")) return;
-          if (id.includes("recharts") || id.includes("d3-")) return "charts";
-          if (id.includes("react-router")) return "router";
-          if (id.includes("lucide-react")) return "icons";
-          if (id.includes("xlsx")) return "xlsx";
-          if (id.includes("jspdf") || id.includes("html2canvas") || id.includes("dompurify")) return "pdf";
-          if (id.includes("react") || id.includes("scheduler")) return "react";
-          return "vendor";
-        },
-      },
-    },
   },
   server: {
     port: 5173,

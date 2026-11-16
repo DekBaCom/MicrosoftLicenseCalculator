@@ -129,7 +129,7 @@ export function AppShell() {
 
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center px-4 gap-3 sticky top-0 z-20">
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center px-3 sm:px-4 gap-2 sm:gap-3 sticky top-0 z-20">
           <button
             onClick={() => setOpen(true)}
             className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg"
@@ -137,7 +137,7 @@ export function AppShell() {
           >
             <Menu className="w-5 h-5" />
           </button>
-          <div className="min-w-0">
+          <div className="min-w-0 hidden sm:block">
             <div className="text-sm font-semibold text-slate-900 truncate">
               Microsoft License Assessment & Calculator
             </div>
@@ -146,7 +146,7 @@ export function AppShell() {
             </div>
           </div>
 
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-1.5 sm:gap-2 min-w-0">
             {/* Language toggle */}
             <button
               onClick={() => setLang(lang === "en" ? "th" : "en")}
@@ -171,10 +171,10 @@ export function AppShell() {
             </button>
 
             {/* Current assessment picker */}
-            <div className="relative">
+            <div className="relative min-w-0">
               <button
                 onClick={() => setPicker((v) => !v)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-sm max-w-[260px]"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-sm max-w-[130px] sm:max-w-[260px]"
               >
                 <FolderOpenDot className="w-4 h-4 text-brand-700" />
                 <span className="truncate">
@@ -183,7 +183,7 @@ export function AppShell() {
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
               </button>
               {picker && (
-                <div className="absolute right-0 mt-1 w-72 bg-white border border-slate-200 rounded-lg shadow-soft z-30 max-h-80 overflow-y-auto">
+                <div className="absolute right-0 mt-1 w-72 max-w-[calc(100vw-1.5rem)] bg-white border border-slate-200 rounded-lg shadow-soft z-30 max-h-80 overflow-y-auto">
                   {assessments.length === 0 && (
                     <div className="p-3 text-sm text-slate-500">No assessments yet.</div>
                   )}
@@ -217,6 +217,10 @@ export function AppShell() {
           </div>
           <footer className="border-t border-slate-200 bg-white py-3 px-4 md:px-6 text-xs text-slate-500 text-center">
             {t("app.footer")}
+            <span className="mx-1.5">·</span>
+            <a href="mailto:Abdulloh.eg@gmail.com" className="text-brand-700 hover:underline break-all">
+              Abdulloh.eg@gmail.com
+            </a>
           </footer>
         </main>
       </div>

@@ -72,6 +72,7 @@ saved in LocalStorage (prefix `mslc.v1.`).
 - **สองภาษา** ไทย / English (สลับที่ปุ่มบนแถบด้านบน)
 - **Dark Mode** (จำค่าที่เลือกไว้ และเริ่มตามค่าของระบบเป็นค่าเริ่มต้น)
 - Responsive: Desktop → Tablet → Mobile (sidebar แบบ hamburger)
+- รองรับทุกแพลตฟอร์ม: Windows, macOS, Linux, Android, iOS — Chrome/Edge 79+, Firefox 72+, Safari/iOS 13+ (มีหน้าแจ้งข้อผิดพลาดแทนหน้าขาวหากโหลดแอปไม่สำเร็จ)
 - **Clean data**: ไม่มีข้อมูลตัวอย่างฝังมาให้ เริ่มจากว่างเปล่า
 - ประสิทธิภาพ: lazy-loaded routes และแยก chunk ของ chart / xlsx / pdf
 - มี **Disclaimer** เรื่อง licensing ทุกหน้า

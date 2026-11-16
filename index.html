@@ -2,14 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#1d4ed8" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="description" content="Microsoft License Assessment & Calculator — for Presales / Solution Specialists." />
     <title>Microsoft License Assessment & Calculator</title>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>This app requires JavaScript. กรุณาเปิดใช้งาน JavaScript</noscript>
+    <script>
+      // Show a readable message instead of a blank page if the app bundle fails to start
+      // (old browser, blocked script, or a stale cached page after a new deploy).
+      window.addEventListener("load", function () {
+        setTimeout(function () {
+          var root = document.getElementById("root");
+          if (root && !root.hasChildNodes()) {
+            root.innerHTML =
+              '<div style="max-width:480px;margin:48px auto;padding:16px;font-family:system-ui,sans-serif">' +
+              '<h2 style="font-size:18px;margin:0 0 8px">Unable to load the app / โหลดแอปไม่สำเร็จ</h2>' +
+              '<p style="font-size:14px;color:#475569">Please update your browser (Chrome, Edge, Firefox, Safari 13+) or reload the page.</p>' +
+              '<button onclick="location.reload()" style="background:#1d4ed8;color:#fff;border:0;border-radius:8px;padding:8px 16px;font-size:14px">Reload</button></div>';
+          }
+        }, 4000);
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
