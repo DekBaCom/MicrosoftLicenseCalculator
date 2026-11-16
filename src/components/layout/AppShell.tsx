@@ -13,6 +13,7 @@ import {
   FileText,
   FileDown,
   BookOpen,
+  BookOpenCheck,
   Settings as SettingsIcon,
   Menu,
   X,
@@ -35,6 +36,7 @@ const nav = [
   { to: "/reports", label: "Reports", icon: FileText },
   { to: "/export", label: "Export", icon: FileDown },
   { to: "/catalog", label: "License Catalog", icon: BookOpen },
+  { to: "/data-collection", label: "วิธีเก็บข้อมูล Host", icon: BookOpenCheck },
   { to: "/settings", label: "Settings", icon: SettingsIcon },
 ];
 

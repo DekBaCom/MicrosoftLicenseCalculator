@@ -13,6 +13,7 @@ import Recommendations from "./pages/Recommendations";
 import Reports from "./pages/Reports";
 import Export from "./pages/Export";
 import Catalog from "./pages/Catalog";
+import DataCollection from "./pages/DataCollection";
 import Settings from "./pages/Settings";
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="reports" element={<Reports />} />
           <Route path="export" element={<Export />} />
           <Route path="catalog" element={<Catalog />} />
+          <Route path="data-collection" element={<DataCollection />} />
           <Route path="settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Route>
