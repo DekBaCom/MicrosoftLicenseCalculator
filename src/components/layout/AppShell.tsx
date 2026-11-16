@@ -20,14 +20,20 @@ import {
   ChevronDown,
   Languages,
   Cloud,
+  Moon,
+  Sun,
+  Rocket,
+  LineChart,
 } from "lucide-react";
 import clsx from "clsx";
 import { useApp } from "../../state/AppContext";
 import { useI18n } from "../../i18n";
+import { applyTheme, getInitialTheme, type Theme } from "../../utils/theme";
 
 const nav = [
   { to: "/", key: "nav.dashboard", icon: LayoutDashboard, exact: true },
   { to: "/assessments/new", key: "nav.newAssessment", icon: FilePlus2 },
+  { to: "/templates", key: "nav.templates", icon: Rocket },
   { to: "/assessments", key: "nav.assessments", icon: FolderOpenDot },
   { to: "/windows", key: "nav.windows", icon: Server },
   { to: "/exchange", key: "nav.exchange", icon: Mail },
@@ -35,6 +41,7 @@ const nav = [
   { to: "/m365", key: "nav.m365", icon: Cloud },
   { to: "/cal-rds", key: "nav.calrds", icon: Users },
   { to: "/calculator", key: "nav.calculator", icon: Calculator },
+  { to: "/tco", key: "nav.tco", icon: LineChart },
   { to: "/recommendations", key: "nav.recommendations", icon: Lightbulb },
   { to: "/reports", key: "nav.reports", icon: FileText },
   { to: "/export", key: "nav.export", icon: FileDown },
@@ -49,6 +56,13 @@ export function AppShell() {
   const { t, lang, setLang } = useI18n();
   const [picker, setPicker] = useState(false);
   const loc = useLocation();
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+
+  const toggleTheme = () => {
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    applyTheme(next);
+    setTheme(next);
+  };
 
   return (
     <div className="flex min-h-screen">
@@ -137,6 +151,19 @@ export function AppShell() {
             >
               <Languages className="w-4 h-4 text-brand-700" />
               <span className="font-medium">{lang === "en" ? "EN" : "TH"}</span>
+            </button>
+
+            <button
+              onClick={toggleTheme}
+              className="flex items-center px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-sm"
+              title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label="Toggle dark mode"
+            >
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 text-brand-700" />
+              )}
             </button>
 
             {/* Current assessment picker */}

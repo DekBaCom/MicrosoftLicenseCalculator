@@ -19,6 +19,8 @@ const Reports = lazy(() => import("./pages/Reports"));
 const Export = lazy(() => import("./pages/Export"));
 const Catalog = lazy(() => import("./pages/Catalog"));
 const DataCollection = lazy(() => import("./pages/DataCollection"));
+const Templates = lazy(() => import("./pages/Templates"));
+const TCO = lazy(() => import("./pages/TCO"));
 const Settings = lazy(() => import("./pages/Settings"));
 
 function PageFallback() {
@@ -48,7 +50,9 @@ export default function App() {
           <Route path="sql" element={<SQLServerPage />} />
           <Route path="m365" element={<M365Page />} />
           <Route path="cal-rds" element={<CALRDS />} />
+          <Route path="templates" element={<Templates />} />
           <Route path="calculator" element={<Calculator />} />
+          <Route path="tco" element={<TCO />} />
           <Route path="recommendations" element={<Recommendations />} />
           <Route path="reports" element={<Reports />} />
           <Route path="export" element={<Export />} />

@@ -23,6 +23,7 @@ import {
   DollarSign,
   BadgeAlert,
   FilePlus2,
+  Rocket,
 } from "lucide-react";
 import { PageHeader } from "../components/common/PageHeader";
 import { KpiCard } from "../components/common/KpiCard";
@@ -77,9 +78,14 @@ export default function Dashboard() {
           title={t("dashboard.empty.title")}
           description={t("dashboard.empty.desc")}
           action={
-            <Link to="/assessments/new" className="btn-primary">
-              <FilePlus2 className="w-4 h-4" /> {t("common.newAssessment")}
-            </Link>
+            <div className="flex flex-wrap justify-center gap-2">
+              <Link to="/assessments/new" className="btn-primary">
+                <FilePlus2 className="w-4 h-4" /> {t("common.newAssessment")}
+              </Link>
+              <Link to="/templates" className="btn-secondary">
+                <Rocket className="w-4 h-4" /> {t("nav.templates")}
+              </Link>
+            </div>
           }
         />
       </>
